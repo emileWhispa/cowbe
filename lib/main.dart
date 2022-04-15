@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:cowbe/authentication_screen.dart';
+import 'package:cowbe/home_screen.dart';
+import 'json/user.dart';
 import 'package:cowbe/super_base.dart';
 import 'package:flutter/material.dart';
 
@@ -70,8 +73,14 @@ class _MyHomePageState extends Superbase<MyHomePage> {
 
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-      Timer(const Duration(seconds: 3), ()=>push(const AuthenticationScreen()));
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
+      var string = (await prefs).getString(userKey);
+      if(string != null){
+        User.user = User.fromJson(jsonDecode(string));
+        push(const HomeScreen());
+      }else{
+        Timer(const Duration(seconds: 3), ()=>push(const AuthenticationScreen()));
+      }
     });
     super.initState();
   }

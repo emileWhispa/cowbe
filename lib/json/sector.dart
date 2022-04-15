@@ -1,9 +1,8 @@
-
 import 'district.dart';
 
 class Sector {
-  String id;
-  String name;
+  String? id;
+  String? name;
   String? category;
   District? district;
 

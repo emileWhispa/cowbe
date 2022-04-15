@@ -1,5 +1,9 @@
+import 'dart:async';
+
+import 'package:cowbe/client_list_screen.dart';
 import 'package:cowbe/client_screen.dart';
 import 'package:cowbe/json/user.dart';
+import 'package:cowbe/reportage.dart';
 import 'package:cowbe/respondent_form.dart';
 import 'package:cowbe/super_base.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +20,9 @@ class _HomeScreenState extends Superbase<HomeScreen> {
   final _key = GlobalKey<RefreshIndicatorState>();
 
   Future<void> loadData(){
-    return ajax(url: "home?employee_id=${User.user?.employeeId}",onValue: (s,v){
+    return ajax(url: "home?employee_id=${User.user?.employeeId}",error: (s,v)=>refreshData(),onValue: (s,v){
       print(s);
+      refreshData();
       setState(() {
         var map = s['data'];
         abatarishyuzwa = map['Abatarishyuzwa'];
@@ -27,6 +32,12 @@ class _HomeScreenState extends Superbase<HomeScreen> {
         abishyuye = map['Abishyuye'];
       });
     });
+  }
+
+
+
+  refreshData(){
+    Timer(const Duration(seconds: 30),loadData);
   }
 
 
@@ -70,7 +81,7 @@ class _HomeScreenState extends Superbase<HomeScreen> {
                       child: Text("Kubarura umufatabuguzi"),
                     )),
                     IconButton(onPressed: ()async{
-                      await push(RespondentForm(func: (cl){}, user: User.user!),fullscreenDialog: true);
+                      await push(RespondentForm(func: (cl){}),fullscreenDialog: true);
                       reLoad();
                     }, icon: const Icon(Icons.arrow_forward))
                   ],
@@ -112,16 +123,22 @@ class _HomeScreenState extends Superbase<HomeScreen> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Column(
-                          children: [
-                            Image.asset("assets/vector2.png"),
-                            const Padding(
-                              padding: EdgeInsets.only(top: 10),
-                              child: Text("Kwishyura"),
-                            )
-                          ],
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      child: InkWell(
+                        onTap: (){
+                          push(ClientScreenScreen(user: User.user,fromBill: false,));
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Column(
+                            children: [
+                              Image.asset("assets/vector2.png"),
+                              const Padding(
+                                padding: EdgeInsets.only(top: 10),
+                                child: Text("Kwishyura"),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -131,16 +148,22 @@ class _HomeScreenState extends Superbase<HomeScreen> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Column(
-                          children: [
-                            Image.asset("assets/vector3.png"),
-                            const Padding(
-                              padding: EdgeInsets.only(top: 10),
-                              child: Text("Raport"),
-                            )
-                          ],
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      child: InkWell(
+                        onTap: (){
+                          push(const Reportage());
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Column(
+                            children: [
+                              Image.asset("assets/vector3.png"),
+                              const Padding(
+                                padding: EdgeInsets.only(top: 10),
+                                child: Text("Raport"),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -163,6 +186,7 @@ class _HomeScreenState extends Superbase<HomeScreen> {
                     shape: const RoundedRectangleBorder(),
                     child: InkWell(
                       onTap: ()async{
+                        push(const ClientListViewScreen(url: "abatarishyuzwa",title: "Abatarishyuzwa",));
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(15.0),
@@ -184,7 +208,7 @@ class _HomeScreenState extends Superbase<HomeScreen> {
                     shape: const RoundedRectangleBorder(),
                     child: InkWell(
                       onTap: ()async{
-
+                        push(const ClientListViewScreen(url: "abatarishyura",title: "Abatarishyura",));
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(15.0),
@@ -206,7 +230,7 @@ class _HomeScreenState extends Superbase<HomeScreen> {
                     shape: const RoundedRectangleBorder(),
                     child: InkWell(
                       onTap: ()async{
-
+                        push(const ClientListViewScreen(url: "abishyujwe",title: "Abishyujwe",));
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(15.0),
@@ -228,7 +252,7 @@ class _HomeScreenState extends Superbase<HomeScreen> {
                     shape: const RoundedRectangleBorder(),
                     child: InkWell(
                       onTap: ()async{
-
+                        push(const ClientListViewScreen(url: "abishyuye",title: "Abishyuye",));
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(15.0),

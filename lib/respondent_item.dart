@@ -1,12 +1,13 @@
 import 'dart:math';
 
-import 'package:cowbe/new_payment_form.dart';
+import 'package:cowbe/new_form.dart';
 import 'package:cowbe/super_base.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import '../json/user.dart';
 import '../json/client.dart';
+import 'new_bill_creation_form.dart';
 
 class RespondentItem extends StatefulWidget {
   final Client client;
@@ -15,6 +16,7 @@ class RespondentItem extends StatefulWidget {
   final Function(Client r) refresh;
   final Function(String string)? showSnack;
   final bool canTap;
+  final bool fromBill;
 
   const RespondentItem(
       {Key? key,
@@ -23,7 +25,8 @@ class RespondentItem extends StatefulWidget {
       this.replace = true,
       required this.refresh,
       this.showSnack,
-      this.canTap = true})
+      this.canTap = true,
+      this.fromBill = true})
       : super(key: key);
 
   @override
@@ -48,7 +51,8 @@ class _RespondentItemState extends Superbase<RespondentItem> {
         ? ListTile(
             subtitle: Text(
               widget.client.display,
-              style: const TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
+              style: const TextStyle(
+                  fontStyle: FontStyle.italic, color: Colors.grey),
             ),
             title: Row(
               children: const <Widget>[
@@ -83,11 +87,17 @@ class _RespondentItemState extends Superbase<RespondentItem> {
               widget.client.meterNumber,
               style: const TextStyle(),
             ),
-            onTap: widget.canTap ? () {
-              push(NewPaymentForm(client: widget.client,user: User.user,),fullscreenDialog: true);
-            } : null,
-  
-
+            onTap: widget.canTap
+                ? () {
+                    var wid = widget.fromBill
+                        ? NewBillCreationForm(
+                            client: widget.client,
+                            user: User.user,
+                          )
+                        : NewForm(client: widget.client);
+                    push(wid, fullscreenDialog: true);
+                  }
+                : null,
           );
   }
 

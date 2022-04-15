@@ -1,23 +1,20 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:cowbe/respondent_item.dart';
 import 'package:cowbe/super_base.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/cupertino.dart' as prefix0;
 import 'package:flutter/material.dart';
 
 import 'json/client.dart';
 import 'json/user.dart';
-import 'respondent_form.dart';
-import 'main.dart';
 
 class ClientScreenScreen extends StatefulWidget {
   final User? user;
   final bool isNew;
+  final bool fromBill;
 
-  const ClientScreenScreen({Key? key,this.user, this.isNew = false})
+  const ClientScreenScreen({Key? key, this.user, this.isNew = false, this.fromBill = true})
       : super(key: key);
 
   @override
@@ -26,7 +23,8 @@ class ClientScreenScreen extends StatefulWidget {
 
 class _ClientScreenScreenState extends Superbase<ClientScreenScreen> {
   void showDemoDialog<T>(
-      {required Widget Function(BuildContext context) builder,required BuildContext context}) {
+      {required Widget Function(BuildContext context) builder,
+      required BuildContext context}) {
     showDialog<T>(
       context: context,
       barrierDismissible: false,
@@ -34,7 +32,7 @@ class _ClientScreenScreenState extends Superbase<ClientScreenScreen> {
     ).then<void>((T? value) {
       // The value passed to Navigator.pop() or null.
       if (value != null) {
-        showSnack( 'You selected: $value');
+        showSnack('You selected: $value');
       }
     });
   }
@@ -80,13 +78,10 @@ class _ClientScreenScreenState extends Superbase<ClientScreenScreen> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
-      body:
-      _HomeData(user: widget.user!),
+      body: _HomeData(user: widget.user!,fromBill: widget.fromBill,),
     );
   }
 }
@@ -94,8 +89,9 @@ class _ClientScreenScreenState extends Superbase<ClientScreenScreen> {
 class _SearchDemoSearchDelegate extends SearchDelegate<Client?> {
   final List<Client> _data;
   final User? user;
+  final bool fromBill;
 
-  _SearchDemoSearchDelegate(this._data, { this.user});
+  _SearchDemoSearchDelegate(this._data, {this.user,this.fromBill = true});
 
   @override
   Widget buildLeading(BuildContext context) {
@@ -120,6 +116,7 @@ class _SearchDemoSearchDelegate extends SearchDelegate<Client?> {
     return _SuggestionList(
       query: query,
       user: user,
+      fromBill: fromBill,
       suggestions: suggestions,
       onSelected: (Client res) {
         query = res.first;
@@ -156,8 +153,9 @@ class _SearchDemoSearchDelegate extends SearchDelegate<Client?> {
 
 class _HomeData extends StatefulWidget {
   final User? user;
+  final bool fromBill;
 
-  const _HomeData({Key? key, @required this.user}) : super(key: key);
+  const _HomeData({Key? key, @required this.user, this.fromBill = true}) : super(key: key);
 
   @override
   __HomeDataState createState() => __HomeDataState();
@@ -170,22 +168,18 @@ class __HomeDataState extends Superbase<_HomeData> {
 
   String get uri => "?load=questions_clients_id_xc&?page=$page";
   Timer? timer;
-  ScrollController _controller = ScrollController();
+  final ScrollController _controller = ScrollController();
 
   int page = 1;
 
-
-
   @override
   void dispose() {
-    // TODO: implement dispose
- timer?.cancel();
+    timer?.cancel();
     super.dispose();
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     setDelegate();
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       _refreshKey.currentState?.show(atTop: true);
@@ -217,17 +211,16 @@ class __HomeDataState extends Superbase<_HomeData> {
         onValue: (s, v) {
           // Map<String, dynamic> decode = json.decode(s);
           // var status = decode['employee_status'];
-
         });
   }
 
   void refreshOp() {
-    timer = Timer(Duration(seconds: 600), () => this.loadQuestions(true));
+    timer = Timer(const Duration(seconds: 600), () => loadQuestions(true));
   }
 
-  List<String> _urls = [];
+  final List<String> _urls = [];
 
-  Future<void> loadQuestions(bool refresh, {int page: 1}) {
+  Future<void> loadQuestions(bool refresh, {int page = 1}) {
     setState(() {});
     return ajax(
         url: uri,
@@ -266,8 +259,6 @@ class __HomeDataState extends Superbase<_HomeData> {
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
 
-
-
   final List<Client> _list = <Client>[];
 
   Widget _buildRow(int i) {
@@ -287,6 +278,7 @@ class __HomeDataState extends Superbase<_HomeData> {
 
     return RespondentItem(
       user: widget.user,
+      fromBill: widget.fromBill,
       refresh: (Client c) {
         _list[i] = c;
         save(url(uri), _list);
@@ -297,7 +289,7 @@ class __HomeDataState extends Superbase<_HomeData> {
   }
 
   void setDelegate() {
-    _delegate = _SearchDemoSearchDelegate(_list, user: widget.user);
+    _delegate = _SearchDemoSearchDelegate(_list, user: widget.user,fromBill: widget.fromBill);
   }
 
   Future<void> refreshList() async {
@@ -314,7 +306,7 @@ class __HomeDataState extends Superbase<_HomeData> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             const Text(
-              "PAAKKAM",
+              "Clients",
               style: TextStyle(fontSize: 17),
             ),
             Text(
@@ -335,8 +327,8 @@ class __HomeDataState extends Superbase<_HomeData> {
           key: _refreshKey,
           child: _loading
               ? ListView(
-            // controller: _controller,
-            shrinkWrap: true,
+                  // controller: _controller,
+                  shrinkWrap: true,
                   children: const <Widget>[
                     Padding(
                       padding: EdgeInsets.only(top: 48.0),
@@ -346,7 +338,7 @@ class __HomeDataState extends Superbase<_HomeData> {
                 )
               : Scrollbar(
                   child: ListView.separated(
-                    primary: true,
+                      primary: true,
                       // controller: _controller,
                       itemCount: _list.length + 1,
                       separatorBuilder: (context, index) {
@@ -361,10 +353,14 @@ class __HomeDataState extends Superbase<_HomeData> {
 
 class _SuggestionList extends StatefulWidget {
   const _SuggestionList(
-      {required this.suggestions, required this.query, required this.onSelected, @required this.user});
+      {required this.suggestions,
+      required this.query,
+      required this.onSelected,
+      @required this.user, this.fromBill = true});
 
   final List<Client> suggestions;
   final User? user;
+  final bool fromBill;
   final String query;
   final ValueChanged<Client> onSelected;
 
@@ -382,8 +378,7 @@ class __SuggestionListState extends Superbase<_SuggestionList> {
   String? _query;
 
   void _search(String query) {
-
-    if( _query == query ) return;
+    if (_query == query) return;
 
     _query = query;
 
@@ -399,11 +394,12 @@ class __SuggestionListState extends Superbase<_SuggestionList> {
           "district_id": widget.user?.districtId,
           "company_id": widget.user?.companyId,
           "employee_id": widget.user?.employeeId,
-          "query":query
+          "query": query
         }),
         onValue: (source, url) {
           setState(() {
-            _list = (source as Iterable).map((f)=>Client.fromJson(f)).toList();
+            _list =
+                (source as Iterable).map((f) => Client.fromJson(f)).toList();
           });
         },
         onEnd: () {
@@ -416,7 +412,7 @@ class __SuggestionListState extends Superbase<_SuggestionList> {
   @override
   void didUpdateWidget(covariant _SuggestionList oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if(oldWidget.query != widget.query){
+    if (oldWidget.query != widget.query) {
       _search(widget.query);
     }
   }
@@ -450,6 +446,7 @@ class __SuggestionListState extends Superbase<_SuggestionList> {
         final Client client = suggestions[i];
         return RespondentItem(
           client: client,
+          fromBill: widget.fromBill,
           refresh: (Client r) {},
           user: widget.user,
         );

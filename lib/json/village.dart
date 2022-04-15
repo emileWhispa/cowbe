@@ -2,8 +2,8 @@
 import 'cell.dart';
 
 class Village {
-  String id;
-  String name;
+  String? id;
+  String? name;
   Cell? cell;
 
   Village(this.id, this.name);

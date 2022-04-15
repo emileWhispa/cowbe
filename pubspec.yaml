@@ -73,6 +73,8 @@ flutter:
      - assets/cowbe_logo.png
      - assets/water_drop.png
      - assets/water_tape.png
+     - assets/money_2.png
+     - assets/money_3.png
      - assets/vector1.png
      - assets/vector2.png
      - assets/vector3.png

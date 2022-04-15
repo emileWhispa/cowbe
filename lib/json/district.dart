@@ -1,7 +1,7 @@
 
 class District {
-  String id;
-  String name;
+  String? id;
+  String? name;
 
   District(this.id, this.name);
 

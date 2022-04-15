@@ -1,5 +1,3 @@
-
-
 import 'category.dart';
 import 'cell.dart';
 import 'district.dart';
@@ -23,16 +21,33 @@ class Client {
   String? wssn;
   String? wss;
   String? wssPrice;
-  Village village;
+  Village? village;
   bool deleted = false;
-  Cell cell;
-  Sector sector;
+  Cell? cell;
+  Sector? sector;
   int debt = 0;
   int fines = 0;
-  District district;
+  District? district;
   Category? category;
 
-  Client(this.id,this.first,this.last,this.meterNumber,this.phone,this.status,this.time,this.wss,this.wssn,this.index,this.nationalId,this.clientID,this.village,this.cell,this.sector,this.district,this.category);
+  Client(
+      this.id,
+      this.first,
+      this.last,
+      this.meterNumber,
+      this.phone,
+      this.status,
+      this.time,
+      this.wss,
+      this.wssn,
+      this.index,
+      this.nationalId,
+      this.clientID,
+      this.village,
+      this.cell,
+      this.sector,
+      this.district,
+      this.category);
 
   Client.fromJson(Map<String, dynamic> json)
       : first = json['client_fname'],
@@ -53,52 +68,49 @@ class Client {
         debt = int.tryParse(json['client_debt'].toString()) ?? 0,
         fines = int.tryParse(json['client_fines'].toString()) ?? 0,
         time = json['client_reg_date'],
-  district = District.fromJson(json),
-  sector = Sector.fromJson(json, null),
-  cell = Cell.fromJson(json,null),
-  category = Category.fromJson(json),
-  village = Village.fromJson(json, null);
+        district = json['district_id'] != null ? District.fromJson(json) : null,
+        sector = json['district_id'] != null ? Sector.fromJson(json, null) : null,
+        cell = json['cell_id'] != null ? Cell.fromJson(json, null) : null,
+        category = json['category_id'] != null ? Category.fromJson(json) : null,
+        village = json['village_id'] != null ? Village.fromJson(json, null) : null;
 
   Map<String, dynamic> toJson() => {
-    'client_fname': first,
-    'client_lname': last,
-    'client_fines': fines,
-    'client_phone': phone,
-    // 'category_name': categoryName,
-    'client_status': status,
-    'wssn_name': wssn,
-    'wss_price': wssPrice,
-    'wss_name': wss,
-    'client_nid': nationalId,
-    'client_upi': upi,
-    'client_reg_date': time,
-    'client_meter_number': meterNumber,
-    'client_current_index': index,
-    'user_email': status,
-    'client_id': id,
-    'client_debt': debt,
-    'client_cid': clientID,
-    'client_email': email,
-    'village_id': village != null ? village.id : "",
-    'village_name': village != null ? village.name : "",
-    'cell_id': cell != null ? cell.id : "",
-    'cell_name': cell != null ? cell.name : "",
-    'sector_id': sector != null ? sector.id : "",
-    'sector_name': sector != null ? sector.name : "",
-    'sector_category': sector != null ? sector.category : "",
-    'district_id': district != null ? district.id : "",
-    'district_name': district != null ? district.name : "",
-    'category_id': category?.id ?? "",
-    'category_name': category?.name ?? "",
-  };
+        'client_fname': first,
+        'client_lname': last,
+        'client_fines': fines,
+        'client_phone': phone,
+        // 'category_name': categoryName,
+        'client_status': status,
+        'wssn_name': wssn,
+        'wss_price': wssPrice,
+        'wss_name': wss,
+        'client_nid': nationalId,
+        'client_upi': upi,
+        'client_reg_date': time,
+        'client_meter_number': meterNumber,
+        'client_current_index': index,
+        'user_email': status,
+        'client_id': id,
+        'client_debt': debt,
+        'client_cid': clientID,
+        'client_email': email,
+        'village_id': village?.id ?? "",
+        'village_name': village?.name ?? "",
+        'cell_id': cell?.id ?? "",
+        'cell_name': cell?.name ?? "",
+        'sector_id': sector?.id ?? "",
+        'sector_name': sector?.name ?? "",
+        'sector_category': sector?.category ?? "",
+        'district_id': district?.id ?? "",
+        'district_name': district?.name ?? "",
+        'category_id': category?.id ?? "",
+        'category_name': category?.name ?? "",
+      };
 
+  String get display => "$first $last";
 
-  String get display=>"$first $last";
-
-
-  String get singleChar =>first.isNotEmpty
-        ? first.substring(0, 1).toUpperCase()
-        : "";
+  String get singleChar =>
+      first.isNotEmpty ? first.substring(0, 1).toUpperCase() : "";
 
   bool search(String query) {
     query = query.toLowerCase();
@@ -106,7 +118,6 @@ class Client {
         (last.toLowerCase().contains(query)) ||
         (phone.contains(query)) ||
         (meterNumber.toLowerCase().contains(query)) ||
-        (village.name.toLowerCase().contains(query));
+        (village?.name?.toLowerCase().contains(query) == true);
   }
-
 }

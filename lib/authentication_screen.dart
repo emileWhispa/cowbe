@@ -29,7 +29,7 @@ class _AuthenticationScreenState extends Superbase<AuthenticationScreen> {
     await ajax(url: '?action=login',method: "POST",data: FormData.fromMap({
       "phone":_phoneController.text,
       "password":_passwordController.text,
-    }),onValue: (map,v){
+    }),error: (s,v)=>print(s),onValue: (map,v){
       if (map['error'] != null && map['error']) {
         showSnack(map['text'].toString());
       } else {

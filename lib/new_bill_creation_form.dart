@@ -10,19 +10,19 @@ import 'json/mode.dart';
 import 'json/payment.dart';
 import 'json/user.dart';
 
-class NewPaymentForm extends StatefulWidget {
+class NewBillCreationForm extends StatefulWidget {
   final Client client;
   final User? user;
   final Function(Payment payment)? func;
 
-  const NewPaymentForm({Key? key, required this.client, this.func,this.user})
+  const NewBillCreationForm({Key? key, required this.client, this.func,this.user})
       : super(key: key);
 
   @override
-  _NewPaymentFormState createState() => _NewPaymentFormState();
+  _NewBillCreationFormState createState() => _NewBillCreationFormState();
 }
 
-class _NewPaymentFormState extends Superbase<NewPaymentForm> {
+class _NewBillCreationFormState extends Superbase<NewBillCreationForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController amount =  TextEditingController();
   final TextEditingController receipt = TextEditingController();
@@ -86,7 +86,7 @@ class _NewPaymentFormState extends Superbase<NewPaymentForm> {
           print(s);
           if(s['code'] == 200) {
 
-            // widget.func?.call(payment);
+            // widget9.func?.call(payment);
             Navigator.of(context).pop(s);
           }
           if(s is Map && s.containsKey("message")){

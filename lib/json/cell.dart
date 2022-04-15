@@ -2,8 +2,8 @@
 import 'sector.dart';
 
 class Cell {
-  String id;
-  String name;
+  String? id;
+  String? name;
   Sector? sector;
 
   Cell(this.id, this.name);
