@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cowbe/authentication_screen.dart';
 import 'package:cowbe/client_list_screen.dart';
 import 'package:cowbe/client_screen.dart';
 import 'package:cowbe/json/user.dart';
@@ -21,7 +22,7 @@ class _HomeScreenState extends Superbase<HomeScreen> {
 
   Future<void> loadData(){
     return ajax(url: "home?employee_id=${User.user?.employeeId}",error: (s,v)=>refreshData(),onValue: (s,v){
-      print(s);
+      // print(s);
       refreshData();
       setState(() {
         var map = s['data'];
@@ -274,7 +275,7 @@ class _HomeScreenState extends Superbase<HomeScreen> {
                     shape: const RoundedRectangleBorder(),
                     child: InkWell(
                       onTap: ()async{
-
+                        push(const ClientListViewScreen(url: "amavomero",title: "Amavomero",));
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(15.0),
@@ -309,7 +310,13 @@ class _HomeScreenState extends Superbase<HomeScreen> {
         ),
         child: Material(
           child: InkWell(
-            onTap: (){},
+            onTap: ()async{
+              var dialog = await confirmDialog();
+              if(dialog){
+                (await prefs).clear();
+                push(const AuthenticationScreen(),replaceAll: true);
+              }
+            },
             child: Padding(
               padding: const EdgeInsets.all(20).copyWith(bottom: 30),
               child: const Text("Gusohoka",textAlign: TextAlign.center,style: TextStyle(
