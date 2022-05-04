@@ -102,7 +102,7 @@ class _HomeScreenState extends Superbase<HomeScreen> {
                       clipBehavior: Clip.antiAliasWithSaveLayer,
                       child: InkWell(
                         onTap: (){
-                          push(ClientScreenScreen(user: User.user,));
+                          push(const ClientListViewScreen(url: "abatarishyuzwa",title: "Abatarishyuzwa",));
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(15.0),
@@ -127,7 +127,7 @@ class _HomeScreenState extends Superbase<HomeScreen> {
                       clipBehavior: Clip.antiAliasWithSaveLayer,
                       child: InkWell(
                         onTap: (){
-                          push(ClientScreenScreen(user: User.user,fromBill: false,));
+                          push(const ClientListViewScreen(url: "abatarishyura",title: "Abatarishyura",));
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(15.0),
