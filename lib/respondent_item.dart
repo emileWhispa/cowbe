@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cowbe/client_details_form.dart';
 import 'package:cowbe/new_form.dart';
 import 'package:cowbe/super_base.dart';
 import 'package:dio/dio.dart';
@@ -45,7 +46,6 @@ class _RespondentItemState extends Superbase<RespondentItem> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     final random = Random();
     return _deleted || widget.client.deleted
         ? ListTile(
@@ -89,12 +89,7 @@ class _RespondentItemState extends Superbase<RespondentItem> {
             ),
             onTap: widget.canTap
                 ? () {
-                    var wid = widget.fromBill
-                        ? NewBillCreationForm(
-                            client: widget.client,
-                            user: User.user,
-                          )
-                        : NewForm(client: widget.client);
+                    var wid = PaymentForm(client: widget.client);
                     push(wid, fullscreenDialog: true);
                   }
                 : null,
