@@ -1,3 +1,5 @@
+import 'package:cowbe/search_delegate.dart';
+
 import 'json/user.dart';
 import 'package:cowbe/respondent_item.dart';
 import 'package:cowbe/super_base.dart';
@@ -44,6 +46,16 @@ class _ClientListViewScreenState extends Superbase<ClientListViewScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title ?? "Client List"),
+        actions: [
+          IconButton(onPressed: (){
+            showSearch(context: context, delegate: SearchDemoSearchDelegate((query){
+              var list = _list.where((element) => element.search(query)).toList();
+              return ListView.builder(itemCount: list.length,itemBuilder: (context,index){
+                return RespondentItem(client: list[index], refresh: (client){});
+              });
+            }));
+          }, icon: const Icon(Icons.search))
+        ],
       ),
       body: RefreshIndicator(
         key: _key,
